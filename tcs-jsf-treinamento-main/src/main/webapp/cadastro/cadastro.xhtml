@@ -1,0 +1,118 @@
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">Cadastro de Pessoa</ui:define>
+
+    <ui:define name="content">
+        <h:form id="formCadastro">
+            <ui:include src="/model/confirmarModel.xhtml">
+                <ui:param name="modalBean" value="#{cadastroBean}"/>
+            </ui:include>
+
+            <p:panel header="Formulário de Cadastro" style="width:600px;">
+                <p:messages showDetail="true" closable="true"/>
+
+                <p:panelGrid columns="2" columnClasses="label,value" style="width:100%; margin-bottom:1em;">
+
+                    <p:outputLabel for="nome" value="Nome Completo:"/>
+                    <p:inputText id="nome" value="#{cadastroBean.cadastrarPessoa.nome}" style="width:100%;"/>
+
+                    <p:outputLabel for="idade" value="Idade:"/>
+                    <p:inputText id="idade" value="#{cadastroBean.cadastrarPessoa.idade}" style="width:4em;"/>
+
+                    <p:outputLabel for="email" value="E-mail:"/>
+                    <p:inputText id="email" value="#{cadastroBean.cadastrarPessoa.email}" style="width:100%;"/>
+
+                    <p:outputLabel for="data" value="Data de Nascimento:"/>
+                    <p:calendar id="data" value="#{cadastroBean.cadastrarPessoa.data}"
+                                pattern="dd/MM/yyyy" showIcon="true"/>
+
+                    <p:outputLabel for="tipo" value="Tipo de Documento:"/>
+                    <p:selectOneMenu id="tipo" value="#{cadastroBean.cadastrarPessoa.tipoDocumento}">
+                        <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="CPF" itemValue="CPF"/>
+                        <f:selectItem itemLabel="CNPJ" itemValue="CNPJ"/>
+                        <p:ajax update="docPanel"/>
+                    </p:selectOneMenu>
+
+                    <h:panelGroup id="docPanel" layout="block">
+                        <p:outputLabel for="cpf" value="CPF:" style="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CPF' ? 'display:none;' : ''}"/>
+                        <p:inputMask id="cpf" mask="999.999.999-99"
+                                     value="#{cadastroBean.cadastrarPessoa.numeroCPF}"
+                                     disabled="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CPF'}"
+                                     style="width:100%; #{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CPF' ? 'display:none;' : ''}"/>
+
+                        <p:outputLabel for="cnpj" value="CNPJ:" style="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CNPJ' ? 'display:none;' : ''}"/>
+                        <p:inputMask id="cnpj" mask="99.999.999/9999-99"
+                                     value="#{cadastroBean.cadastrarPessoa.numeroCNPJ}"
+                                     disabled="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CNPJ'}"
+                                     style="width:100%; #{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CNPJ' ? 'display:none;' : ''}"/>
+                    </h:panelGroup>
+
+                    <p:outputLabel for="fazFaculdade" value="Você faz faculdade?"/>
+                    <p:selectOneRadio id="fazFaculdade" value="#{cadastroBean.fazFaculdade}">
+                        <f:selectItem itemLabel="Sim" itemValue="true"/>
+                        <f:selectItem itemLabel="Não" itemValue="false"/>
+                        <p:ajax update="facGrid"/>
+                    </p:selectOneRadio>
+
+                    <h:panelGroup id="facGrid" layout="block">
+                        <p:outputLabel for="faculdade" value="Faculdade:"/>
+                        <p:inputText id="faculdade" value="#{cadastroBean.faculdade}" style="width:100%;"/>
+
+                        <p:outputLabel for="dataInicio" value="Data de Início:"/>
+                        <p:calendar id="dataInicio" value="#{cadastroBean.dataInicio}"
+                                    pattern="dd/MM/yyyy" showIcon="true"/>
+
+                        <p:outputLabel for="periodo" value="Período:"/>
+                        <p:inputText id="periodo" value="#{cadastroBean.periodo}" style="width:4em;"/>
+
+                        <p:outputLabel for="curso" value="Curso:"/>
+                        <p:selectOneMenu id="curso" value="#{cadastroBean.curso}">
+                            <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{cadastroBean.cursosDisponiveis}"/>
+                        </p:selectOneMenu>
+                    </h:panelGroup>
+
+                </p:panelGrid>
+
+                <p:separator/>
+
+                <p:commandButton value="Limpar" action="#{cadastroBean.limpar}"
+                                 update="@form" icon="pi pi-refresh"
+                                 styleClass="ui-button-secondary"/>
+
+                <p:commandButton value="Salvar" action="#{cadastroBean.validarCampos}"
+                                 update="@form" icon="pi pi-save"/>
+
+            </p:panel>
+
+            <p:dialog widgetVar="errorDialog" header="Campos não preenchidos"
+                      modal="true" closable="false" resizable="false">
+                <h:outputText value="#{cadastroBean.errorMessage}" escape="false"/>
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar" type="button"
+                                     onclick="PF('errorDialog').hide()"/>
+                </f:facet>
+            </p:dialog>
+
+            <p:dialog widgetVar="successDialog" header="Sucesso"
+                      modal="true" closable="false" resizable="false">
+                <h:outputText value="Cadastro realizado com sucesso!"/>
+                <f:facet name="footer">
+                    <p:commandButton value="Ok" type="button"
+                                     onclick="PF('successDialog').hide()"
+                                     icon="pi pi-check"/>
+                </f:facet>
+            </p:dialog>
+
+        </h:form>
+    </ui:define>
+
+    <ui:define name="footer">Rodapé – Página de Cadastro</ui:define>
+
+</ui:composition>

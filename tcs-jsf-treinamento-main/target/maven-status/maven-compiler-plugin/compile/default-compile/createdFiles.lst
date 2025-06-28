@@ -1,0 +1,8 @@
+br\com\tcs\treinamento\entity\Pessoa.class
+br\com\tcs\treinamento\bean\CadastroBean.class
+br\com\tcs\treinamento\dao\PessoaDAO.class
+br\com\tcs\treinamento\bean\ConsultaPessoaBean.class
+br\com\tcs\treinamento\model\PessoaVO.class
+br\com\tcs\treinamento\bean\EstudanteBean.class
+br\com\tcs\treinamento\service\impl\PessoaServiceImpl.class
+br\com\tcs\treinamento\service\PessoaService.class

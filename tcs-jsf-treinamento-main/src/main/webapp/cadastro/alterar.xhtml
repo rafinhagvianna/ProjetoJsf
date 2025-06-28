@@ -1,0 +1,90 @@
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">Alterar Pessoa</ui:define>
+
+    <ui:define name="content">
+        <h:form id="formAlterar">
+            <ui:include src="/model/confirmarModel.xhtml">
+                <ui:param name="modalBean" value="#{consultaPessoaBean}"/>
+            </ui:include>
+
+            <p:panel header="Formulário de Alteração" style="width:600px;">
+                <p:messages showDetail="true" closable="true"/>
+
+                <p:panelGrid columns="2" columnClasses="label,value" style="width:100%; margin-bottom:1em;">
+                    <p:outputLabel for="nome" value="Nome Completo:"/>
+                    <p:inputText id="nome" value="#{consultaPessoaBean.pessoaSelecionada.nome}" style="width:100%;"/>
+
+                    <p:outputLabel for="idade" value="Idade:"/>
+                    <p:inputText id="idade" value="#{consultaPessoaBean.pessoaSelecionada.idade}" style="width:4em;"/>
+
+                    <p:outputLabel for="email" value="E-mail:"/>
+                    <p:inputText id="email" value="#{consultaPessoaBean.pessoaSelecionada.email}" style="width:100%;"/>
+
+                    <p:outputLabel for="data" value="Data de Nascimento:"/>
+                    <p:calendar id="data" value="#{consultaPessoaBean.pessoaSelecionada.data}"
+                                pattern="dd/MM/yyyy" showIcon="true"/>
+
+                    <p:outputLabel for="tipo" value="Tipo de Documento:"/>
+                    <p:selectOneMenu id="tipo" value="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento}">
+                        <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="CPF" itemValue="CPF"/>
+                        <f:selectItem itemLabel="CNPJ" itemValue="CNPJ"/>
+                        <p:ajax update="docPanel"/>
+                    </p:selectOneMenu>
+
+                    <h:panelGroup id="docPanel" layout="block">
+                        <p:outputLabel for="cpf" value="CPF:" style="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento ne 'CPF' ? 'display:none;' : ''}"/>
+                        <p:inputMask id="cpf" mask="999.999.999-99"
+                                     value="#{consultaPessoaBean.pessoaSelecionada.numeroCPF}"
+                                     disabled="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento ne 'CPF'}"
+                                     style="width:100%; #{consultaPessoaBean.pessoaSelecionada.tipoDocumento ne 'CPF' ? 'display:none;' : ''}"/>
+
+                        <p:outputLabel for="cnpj" value="CNPJ:" style="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento ne 'CNPJ' ? 'display:none;' : ''}"/>
+                        <p:inputMask id="cnpj" mask="99.999.999/9999-99"
+                                     value="#{consultaPessoaBean.pessoaSelecionada.numeroCNPJ}"
+                                     disabled="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento ne 'CNPJ'}"
+                                     style="width:100%; #{consultaPessoaBean.pessoaSelecionada.tipoDocumento ne 'CNPJ' ? 'display:none;' : ''}"/>
+                    </h:panelGroup>
+                </p:panelGrid>
+
+                <p:separator/>
+
+                <p:commandButton value="Limpar" action="#{consultaPessoaBean.limparAlteracoes}"
+                                 update="@form" icon="pi pi-refresh" styleClass="ui-button-secondary"/>
+
+                <p:commandButton value="Salvar" action="#{consultaPessoaBean.validarCampos}"
+                                 update="@form" icon="pi pi-save"/>
+
+            </p:panel>
+
+            <p:dialog widgetVar="errorDialog" header="Campos não preenchidos"
+                      modal="true" closable="false" resizable="false">
+                <h:outputText value="#{consultaPessoaBean.errorMessage}" escape="false"/>
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar" type="button"
+                                     onclick="PF('errorDialog').hide()"/>
+                </f:facet>
+            </p:dialog>
+
+            <p:dialog widgetVar="successDialog" header="Sucesso"
+                      modal="true" closable="false" resizable="false">
+                <h:outputText value="Alteração realizada com sucesso!"/>
+                <f:facet name="footer">
+                    <p:commandButton value="Ok" type="button"
+                                     onclick="PF('successDialog').hide(); window.location='#{request.contextPath}/cadastro/consultaPessoas.xhtml';"
+                                     icon="pi pi-check"/>
+                </f:facet>
+            </p:dialog>
+
+        </h:form>
+    </ui:define>
+
+    <ui:define name="footer">Rodapé – Página de Alteração</ui:define>
+
+</ui:composition>

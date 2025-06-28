@@ -1,0 +1,137 @@
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        Página de Relatórios
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="formRelatorios">
+            <div class="card">
+                <p:panel header="Gerador de Relatórios">
+
+                    <p:messages id="messages" showDetail="true" closable="true"/>
+
+                    <div class="p-fluid">
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank form-group"
+                                     columnClasses="ui-g-12 ui-md-3 ui-lg-2, ui-g-12 ui-md-9 ui-lg-4">
+
+                            <p:outputLabel for="tipoRelatorio" value="Escolha o Relatório:"/>
+                            <p:selectOneMenu id="tipoRelatorio" value="#{relatorioBean.tipoRelatorioSelecionado}">
+                                <f:selectItem itemLabel="-- Selecione um tipo --" itemValue="" noSelectionOption="true"/>
+                                <f:selectItem itemLabel="Lista Geral de Pessoas" itemValue="LISTA_PESSOAS"/>
+                                <f:selectItem itemLabel="Pessoas por Profissão" itemValue="PESSOAS_POR_PROFISSAO"/>
+                                <f:selectItem itemLabel="Pessoas por Faixa Etária" itemValue="PESSOAS_POR_IDADE"/>
+                                <f:selectItem itemLabel="Pessoas por Status (Ativo/Inativo)" itemValue="PESSOAS_POR_STATUS"/>
+                                <p:ajax update="filtrosPanelGroup resultadosPanel messages" listener="#{relatorioBean.limparFiltros}"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </div>
+
+                    <p:outputPanel id="filtrosPanelGroup" style="margin-top: 1em;">
+                        <p:panel header="Filtros" rendered="#{not empty relatorioBean.tipoRelatorioSelecionado}">
+                            <div class="p-fluid">
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank form-group"
+                                             columnClasses="ui-g-12 ui-md-3 ui-lg-2, ui-g-12 ui-md-9 ui-lg-4">
+
+                                    <!-- Filtro por Profissão -->
+                                    <p:outputLabel for="filtroProfissao" value="Profissão:"
+                                                   rendered="#{relatorioBean.tipoRelatorioSelecionado eq 'PESSOAS_POR_PROFISSAO'}"/>
+                                    <p:inputText id="filtroProfissao" value="#{relatorioBean.filtroProfissao}"
+                                                 rendered="#{relatorioBean.tipoRelatorioSelecionado eq 'PESSOAS_POR_PROFISSAO'}"/>
+
+                                    <!-- Filtro por Faixa Etária (CORRIGIDO) -->
+                                    <p:outputLabel for="idadeMinima" value="Idade Mínima:"
+                                                   rendered="#{relatorioBean.tipoRelatorioSelecionado eq 'PESSOAS_POR_IDADE'}"/>
+                                    <p:spinner id="idadeMinima" value="#{relatorioBean.idadeMinima}" min="0"
+                                               rendered="#{relatorioBean.tipoRelatorioSelecionado eq 'PESSOAS_POR_IDADE'}"/>
+
+                                    <p:outputLabel for="idadeMaxima" value="Idade Máxima:"
+                                                   rendered="#{relatorioBean.tipoRelatorioSelecionado eq 'PESSOAS_POR_IDADE'}"/>
+                                    <p:spinner id="idadeMaxima" value="#{relatorioBean.idadeMaxima}" min="0"
+                                               rendered="#{relatorioBean.tipoRelatorioSelecionado eq 'PESSOAS_POR_IDADE'}"/>
+
+                                    <!-- Novo Filtro por Status -->
+                                    <p:outputLabel for="filtroStatus" value="Status:"
+                                                   rendered="#{relatorioBean.tipoRelatorioSelecionado eq 'PESSOAS_POR_STATUS'}"/>
+                                    <p:selectOneMenu id="filtroStatus" value="#{relatorioBean.filtroStatus}"
+                                                     rendered="#{relatorioBean.tipoRelatorioSelecionado eq 'PESSOAS_POR_STATUS'}">
+                                        <f:selectItem itemLabel="Todos" itemValue=""/>
+                                        <f:selectItem itemLabel="Ativo" itemValue="ATIVO"/>
+                                        <f:selectItem itemLabel="Inativo" itemValue="INATIVO"/>
+                                    </p:selectOneMenu>
+
+                                </p:panelGrid>
+                            </div>
+
+                            <p:commandButton value="Gerar Relatório" action="#{relatorioBean.gerarRelatorio}"
+                                             update="messages resultadosPanel" icon="pi pi-play"/>
+                            <p:commandButton value="Limpar Filtros" action="#{relatorioBean.limparFiltros}"
+                                             update="filtrosPanelGroup resultadosPanel" styleClass="ui-button-secondary"
+                                             icon="pi pi-refresh" process="@this"/>
+                        </p:panel>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="resultadosPanel" style="width:100%; margin-top:20px;">
+                        <p:panel header="Resultados do Relatório" rendered="#{not empty relatorioBean.dadosRelatorio}">
+                            <!-- Tabela de Resultados Melhorada -->
+                            <p:dataTable id="tabelaPessoas" var="pessoa" value="#{relatorioBean.dadosRelatorio}"
+                                         paginator="true" rows="10" responsiveLayout="scroll"
+                                         emptyMessage="Nenhum resultado encontrado.">
+
+                                <p:column headerText="Nome" sortBy="#{pessoa.nome}">
+                                    <h:outputText value="#{pessoa.nome}"/>
+                                </p:column>
+                                <p:column headerText="Idade" sortBy="#{pessoa.idade}" style="text-align: center; width: 80px;">
+                                    <h:outputText value="#{pessoa.idade}"/>
+                                </p:column>
+                                <p:column headerText="Profissão" sortBy="#{pessoa.profissao}">
+                                    <h:outputText value="#{pessoa.profissao}"/>
+                                </p:column>
+                                <p:column headerText="Status" sortBy="#{pessoa.ativo}" style="width: 100px;">
+                                    <h:outputText value="#{pessoa.ativo ? 'Ativo' : 'Inativo'}"
+                                                  style="color: #{pessoa.ativo ? 'green' : 'red'}; font-weight: bold;"/>
+                                </p:column>
+                                <p:column headerText="Admissão" sortBy="#{pessoa.dataAdmissao}" style="width: 120px;">
+                                    <h:outputText value="#{pessoa.dataAdmissao}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Data de Nascimento" sortBy="#{pessoa.data}" style="width: 120px;" >
+                                    <h:outputText value="#{pessoa.data}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="CPF / CNPJ" sortBy="#{pessoa.cpf} ? #{pessoa.cnpj}"/>
+                                <h:outputText value="#{not empty p.numeroCPF ? p.numeroCPF : p.numeroCNPJ}" />
+                            </p:dataTable>
+
+                            <p:separator style="margin-top:20px; margin-bottom:20px;"/>
+
+                            <p:commandButton icon="pi pi-file-excel" title="Exportar Excel"
+                                             value="Exportar Excel" styleClass="ui-button-success"
+                                             rendered="#{not empty relatorioBean.dadosRelatorio}"
+                                             ajax="false">
+                                <p:dataExporter type="xls" target="tabelaPessoas" fileName="relatorio_pessoas"/>
+                            </p:commandButton>
+
+                            <p:commandButton icon="pi pi-file-pdf" title="Exportar PDF"
+                                             value="Exportar PDF" styleClass="ui-button-danger"
+                                             rendered="#{not empty relatorioBean.dadosRelatorio}"
+                                             ajax="false" style="margin-left: 0.5em;">
+                                <p:dataExporter type="pdf" target="tabelaPessoas" fileName="relatorio_pessoas"/>
+                            </p:commandButton>
+                        </p:panel>
+                    </p:outputPanel>
+                </p:panel>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

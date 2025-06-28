@@ -1,0 +1,68 @@
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">Estudantes</ui:define>
+
+    <ui:define name="content">
+        <h:form id="formEstudantes">
+            <p:panel header="Lista de Estudantes" style="width:100%; margin:0 auto;">
+                <p:messages showDetail="true" closable="true"/>
+
+                <div style="transform: scale(0.9); transform-origin: top left; width:100%;">
+                    <p:dataTable value="#{estudanteBean.estudantes}" var="p"
+                                 paginator="true" rows="7" autoLayout="true"
+                                 emptyMessage="Nenhum estudante cadastrado."
+                                 rowKey="#{p.id}"
+                                 styleClass="ui-datatable-striped ui-datatable-hover"
+                                 responsiveLayout="scroll">
+
+                        <p:column headerText="Nome" style="width:25%;">#{p.nome}</p:column>
+                        <p:column headerText="Faculdade" style="width:25%;">#{p.faculdade}</p:column>
+                        <p:column headerText="Curso" style="width:20%;">#{p.curso}</p:column>
+                        <p:column headerText="Período" style="width:10%; text-align:center;">#{p.periodo}</p:column>
+                        <p:column headerText="Início" style="width:12%;">
+                            <h:outputText value="#{p.dataInicio}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Ações" style="text-align:center; width:300px;">
+                            <div style="display:flex; justify-content:center; gap:10px;">
+                                <p:commandButton value="Alterar"
+                                                 action="#{estudanteBean.prepararEdicao(p)}"
+                                                 icon="pi pi-pencil"
+                                                 styleClass="ui-button-secondary"
+                                                 update="@form"/>
+                                <p:commandButton value="Excluir"
+                                                 action="#{estudanteBean.prepararExclusao(p)}"
+                                                 icon="pi pi-trash"
+                                                 styleClass="ui-button-secondary"
+                                                 update="@form"/>
+                            </div>
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <div style="text-align:right; margin-top:10px;">
+                        <p:commandButton value="Exportar PDF"
+                                         action="#{estudanteBean.exportarPdf}"
+                                         ajax="false" icon="pi pi-file-pdf"
+                                         styleClass="ui-button-secondary"
+                                         style="margin-right:8px;"/>
+                        <p:commandButton value="Exportar Excel"
+                                         action="#{estudanteBean.exportarExcel}"
+                                         ajax="false" icon="pi pi-file-excel"
+                                         styleClass="ui-button-secondary"
+                                         style="margin-right:8px;"/>
+                    </div>
+                </div>
+
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="footer">Rodapé – Estudantes</ui:define>
+</ui:composition>
