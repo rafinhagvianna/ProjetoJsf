@@ -39,6 +39,8 @@
                         <p:ajax update="docPanel"/>
                     </p:selectOneMenu>
 
+                    <p:separator/>
+
                     <h:panelGroup id="docPanel" layout="block">
                         <p:outputLabel for="cpf" value="CPF:" style="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CPF' ? 'display:none;' : ''}"/>
                         <p:inputMask id="cpf" mask="999.999.999-99"
@@ -53,14 +55,21 @@
                                      style="width:100%; #{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CNPJ' ? 'display:none;' : ''}"/>
                     </h:panelGroup>
 
+
+                    <p:outputLabel value="Área do Estudante:" style="font-weight: bold; font-size: 1.2em; color: #333;" />
+                    <h:outputText value="" />
+
                     <p:outputLabel for="fazFaculdade" value="Você faz faculdade?"/>
-                    <p:selectOneRadio id="fazFaculdade" value="#{cadastroBean.fazFaculdade}">
+                    <p:selectOneMenu id="fazFaculdade" value="#{cadastroBean.fazFaculdade}">
                         <f:selectItem itemLabel="Sim" itemValue="true"/>
                         <f:selectItem itemLabel="Não" itemValue="false"/>
                         <p:ajax update="facGrid"/>
-                    </p:selectOneRadio>
+                    </p:selectOneMenu>
 
-                    <h:panelGroup id="facGrid" layout="block">
+                </p:panelGrid>
+
+                <h:panelGroup id="facGrid" layout="block" style="margin-bottom:1em;">
+                    <p:panelGrid columns="2" columnClasses="label,value" style="width:100%;" rendered="#{cadastroBean.fazFaculdade}">
                         <p:outputLabel for="faculdade" value="Faculdade:"/>
                         <p:inputText id="faculdade" value="#{cadastroBean.faculdade}" style="width:100%;"/>
 
@@ -76,9 +85,8 @@
                             <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/>
                             <f:selectItems value="#{cadastroBean.cursosDisponiveis}"/>
                         </p:selectOneMenu>
-                    </h:panelGroup>
-
-                </p:panelGrid>
+                    </p:panelGrid>
+                </h:panelGroup>
 
                 <p:separator/>
 

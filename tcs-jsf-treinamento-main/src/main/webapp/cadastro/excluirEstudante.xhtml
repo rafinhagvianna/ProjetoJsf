@@ -1,0 +1,79 @@
+<!-- excluirEstudante.xhtml -->
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">Exclusão de Estudante</ui:define>
+
+    <ui:define name="content">
+        <h:form id="formExclusaoEstudante">
+
+            <!-- diálogo de confirmação genérico -->
+            <ui:include src="/model/confirmarExclusaoModel.xhtml">
+                <ui:param name="modalBean" value="#{estudanteBean}" />
+            </ui:include>
+
+            <p:panel header="Formulário de Exclusão de Estudante" style="width:600px;">
+                <p:messages showDetail="true" closable="true"/>
+
+                <p:panelGrid columns="2"
+                             columnClasses="label,value"
+                             style="width:100%; margin-bottom:1em;">
+                    <p:outputLabel for="nome"       value="Nome Completo:"/>
+                    <h:outputText   id="nome"       value="#{estudanteBean.selec.nome}"/>
+
+                    <p:outputLabel for="faculdade"  value="Faculdade:"/>
+                    <h:outputText   id="faculdade"  value="#{estudanteBean.selec.faculdade}"/>
+
+                    <p:outputLabel for="curso"      value="Curso:"/>
+                    <h:outputText   id="curso"      value="#{estudanteBean.selec.curso}"/>
+
+                    <p:outputLabel for="periodo"    value="Período:"/>
+                    <h:outputText   id="periodo"    value="#{estudanteBean.selec.periodo}"/>
+
+                    <p:outputLabel for="dataInicio" value="Data de Início:"/>
+                    <h:outputText   id="dataInicio" value="#{estudanteBean.selec.dataInicio}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+
+                    <p:outputLabel for="status"     value="Status:"/>
+                    <h:outputText   id="status"
+                                    value="#{estudanteBean.selec.ativo ? 'Ativo' : 'Inativo'}"/>
+                </p:panelGrid>
+
+                <p:separator/>
+
+                <p:commandButton value="Limpar"
+                                 action="#{estudanteBean.init}"
+                                 update="@form"
+                                 icon="pi pi-refresh"
+                                 styleClass="ui-button-secondary"/>
+
+                <p:commandButton value="Excluir"
+                                 onclick="PF('exclusionConfirmDialog').show(); return false;"
+                                 icon="pi pi-trash"
+                                 styleClass="ui-button-danger"/>
+            </p:panel>
+
+            <p:dialog widgetVar="successDialog"
+                      header="Sucesso"
+                      modal="true"
+                      closable="false"
+                      resizable="false">
+                <h:outputText value="Exclusão realizada com sucesso!"/>
+                <f:facet name="footer">
+                    <p:commandButton value="Ok"
+                                     action="#{estudanteBean.init}"
+                                     ajax="false"
+                                     icon="pi pi-check"/>
+                </f:facet>
+            </p:dialog>
+
+        </h:form>
+    </ui:define>
+
+    <ui:define name="footer">Rodapé – Exclusão de Estudante</ui:define>
+</ui:composition>
