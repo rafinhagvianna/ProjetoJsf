@@ -32,7 +32,8 @@
                                 pattern="dd/MM/yyyy" showIcon="true"/>
 
                     <p:outputLabel for="tipo" value="Tipo de Documento:"/>
-                    <p:selectOneMenu id="tipo" value="#{cadastroBean.cadastrarPessoa.tipoDocumento}">
+                    <p:selectOneMenu id="tipo"
+                                     value="#{cadastroBean.cadastrarPessoa.tipoDocumento}">
                         <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/>
                         <f:selectItem itemLabel="CPF" itemValue="CPF"/>
                         <f:selectItem itemLabel="CNPJ" itemValue="CNPJ"/>
@@ -42,19 +43,34 @@
                     <p:separator/>
 
                     <h:panelGroup id="docPanel" layout="block">
-                        <p:outputLabel for="cpf" value="CPF:" style="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CPF' ? 'display:none;' : ''}"/>
-                        <p:inputMask id="cpf" mask="999.999.999-99"
-                                     value="#{cadastroBean.cadastrarPessoa.numeroCPF}"
-                                     disabled="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CPF'}"
-                                     style="width:100%; #{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CPF' ? 'display:none;' : ''}"/>
 
-                        <p:outputLabel for="cnpj" value="CNPJ:" style="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CNPJ' ? 'display:none;' : ''}"/>
-                        <p:inputMask id="cnpj" mask="99.999.999/9999-99"
+                        <p:outputLabel for="cpf" value="CPF:"
+                                       style="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CPF' ? 'display:none;' : ''}"/>
+                        <p:inputMask id="cpf"
+                                     mask="999.999.999-99"
+                                     autoClear="false" unmask="false"
+                                     dir="rtl"
+                                     onkeyup="this.setSelectionRange(this.value.length,this.value.length)"
+                                     widgetVar="cpfMask"
+                                     slotChar="00000000000"
+                                     value="#{cadastroBean.cadastrarPessoa.numeroCPF}"
+                                     style="width:100%;
+                                     #{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CPF' ? 'display:none;' : ''}"/>
+
+
+                        <p:outputLabel for="cnpj" value="CNPJ:"
+                                       style="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CNPJ' ? 'display:none;' : ''}"/>
+                        <p:inputMask id="cnpj"
+                                     mask="99.999.999/9999-99"
+                                     autoClear="false" unmask="false"
+                                     dir="rtl"
+                                     onkeyup="this.setSelectionRange(this.value.length,this.value.length)"
+                                     slotChar="00000000000000"
                                      value="#{cadastroBean.cadastrarPessoa.numeroCNPJ}"
                                      disabled="#{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CNPJ'}"
-                                     style="width:100%; #{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CNPJ' ? 'display:none;' : ''}"/>
+                                     style="width:100%;
+                        #{cadastroBean.cadastrarPessoa.tipoDocumento ne 'CNPJ' ? 'display:none;' : ''}"/>
                     </h:panelGroup>
-
 
                     <p:outputLabel value="Área do Estudante:" style="font-weight: bold; font-size: 1.2em; color: #333;" />
                     <h:outputText value="" />
